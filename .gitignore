@@ -1,0 +1,5 @@
+*.html
+*.sqlite
+*.csv
+
+code/rsconnect/
