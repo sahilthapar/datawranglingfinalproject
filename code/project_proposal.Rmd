@@ -1,0 +1,128 @@
+---
+title: "Exploring European Soccer Database"
+author: Sahil Thapar
+output:
+  html_document: default
+---
+
+## Synopsis
+This R Markdown Notebook is my project prosposal for the [Data Wrangling with R](https://uc-r.github.io/data_wrangling/syllabus) 
+I'm looking to explore European Soccer Database using dplyr and ggplot2 to predict the result of games using historical data. 
+
+## Data Source
+
+The data used is provided through [Kaggle datasets](https://www.kaggle.com/hugomathien/soccer).
+
+## About the data
+
+The data gives information on matches played across 11 different leagues.
+
+__How leagues work?__
+
+* Each league consists of 20 teams that play 2 games (one at home ground, one at away ground) against every other team in a round-robin fashion i.e. every team plays a total of 38 games in a season.  
+* Every win is awarded with 3 points, draw with 1 point and no points are awarded for a loss.  
+* The team with the most points at the end of the season wins the league.  
+* The bottom 3 teams are replaced by the top-3 finishing teams from the second-tier league.  
+
+The data consists of multiple tables. You can find a full description of variables being used [here](http://rpubs.com/sahilthapar/228426).
+
+## Packages Required
+
+```{r, warnings = F, message = F}
+library("RSQLite")
+library("dplyr")
+library("readr")
+library("tidyverse")
+library("tibble")
+library('stringr')
+library('lubridate')
+```
+
+## Importing the data
+```{r}
+
+temp <- tempfile()
+download.file("https://kaggle2.blob.core.windows.net/datasets/63/589/database.sqlite.zip",
+              temp, method = 'curl')
+
+# Extract to get the sqlite file
+data <- unzip(temp)
+filename <- str_c(temp, str_sub(data, 2))
+
+# Connect to the sqlite file
+con = dbConnect(RSQLite::SQLite(), dbname = unzip(temp))
+# get a list of all tables
+dbListTables(con)
+
+# Read all tables
+myQuery <- dbSendQuery(con, "SELECT * FROM Player")
+Player <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Country")
+Country <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM League")
+League <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Player_Attributes")
+Player_Attributes <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Match")
+Match <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Team_Attributes")
+Team_Attributes <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Team")
+Team <- dbFetch(myQuery, n = -1)
+# Clean up the environment
+rm(temp, filename, data, con, myQuery)
+```
+
+
+## Data Cleaning
+```{r}
+# Find the country id for England's Premier League
+England_id <- League %>% 
+  filter(name == "England Premier League") %>%
+  select(id) %>%
+  as.double()
+
+# Filter the matches data for only England
+Match <- Match %>%
+  as_tibble %>%
+  filter(league_id == England_id)
+
+# Match table has:
+# season column - this should be a factor variable
+# date column is a string - this should be a date variable
+# stage column - this should be a factor variable
+# result column - this new column is defined as:
+  # if home_goal > away_goal : home
+  # else if home_goal == away_goal : draw
+  # else away
+
+getResult <- function(home_goal, away_goal){
+  return (ifelse(home_goal > away_goal,
+                 'home',
+                 (ifelse(home_goal == away_goal,
+                         'draw', 'away'))
+  ))
+}
+
+tidy_Match <- Match %>%
+  mutate(season = (season %>% factor(levels = unique(season))),
+         date = as.Date(date),
+         stage = (stage %>% factor(levels = c(1:38))),
+         result =  getResult(home_team_goal, away_team_goal)) %>% 
+  mutate(result = factor(result, levels = c("home", "draw", "away"))) %>%
+  select(matches("id|season|stage|date|result|team_goal|goal"))
+
+```
+
+
+## Planned analysis
+
+* Come up with a base model for predicting result
+* Develop a naive model for predicting result
+* Find most successful teams - overall and grouped by season
+* Find most prolific teams, players
+* Try developing a better model to predict results
+* Develop Shiny app to explore team and player stats.
+
+## Current challenges
+The goal field in the Match table is in xml form. Extracting useful information from this is not simple.

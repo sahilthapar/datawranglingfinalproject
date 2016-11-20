@@ -1,0 +1,50 @@
+---
+title: "European Football Database - Data Description"
+author: "Sahil Thapar"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+## Player:
+
+* __id:__ Integer, id for the player.  
+* __player_api_id:__ Integer, api id for the player.  
+* __player_name:__ String, name of player.  
+* __player_fifa_api_id:__ Integer, fifa api id for the player.  
+* __birthday:__ String, Date of birth of the player.  
+* __height:__ Number, height of player in centimeters.  
+* __weight:__ Integer, weight of player in pounds.  
+
+## Country:
+
+* __id:__ Integer, id for country.  
+* __name:__ String, name of the country.  
+
+
+## League:
+
+* __id:__ Integer, id for the league.  
+* __country_id:__ Integer, __Foreign Key__, id of the country that the league is played in.  
+* __name__: String, name of the country.  
+
+## Team:
+
+* __id:__ Integer, id for the team  
+* __team_api_id:__ Integer, api id for the team.  
+* __team_fifa_api_id:__ Integer, fifa api id for the team.  
+* __team_long_name__: String, full name of the team.  
+* __team_short_name__: String, abbreviated name of the team.  
+
+
+## Match:
+
+* __id:__ Integer, id for the match  
+* __country_id:__ Integer, __Foreign Key__, id of the country that the match is played in.  
+* __league_id:__ Integer, __Foreign Key__, id of the league that the match is played in.  
+* __season:__ String, season which the match was a part of.
+* __date:__ String, date the match was played on.
+* __match_api_id:__ Integer, api id for the match.
+* __home_team_api_id:__ Integer, api id for the home team.
+* __away_team_api_id:__ Integer, api id for the away team.
+
