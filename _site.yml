@@ -1,4 +1,5 @@
 name: "sahilthapar-soccer-exploration"
+output_dir: "."
 navbar:
   title: "Exploring European Soccer Database"
   type: inverse
