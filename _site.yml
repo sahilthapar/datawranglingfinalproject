@@ -1,5 +1,5 @@
 name: "sahilthapar-soccer-exploration"
-output_dir: "."
+output_dir: "docs"
 navbar:
   title: "Exploring European Soccer Database"
   type: inverse
