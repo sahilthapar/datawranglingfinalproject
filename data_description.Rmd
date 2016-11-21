@@ -3,7 +3,6 @@ title: "European Football Database - Data Description"
 author: "Sahil Thapar"
 output:
   html_document: default
-  html_notebook: default
 ---
 
 ## Player:

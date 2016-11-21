@@ -1,0 +1,12 @@
+---
+title: "About"
+author: "Sahil Thapar"
+date: "11/20/2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+About page

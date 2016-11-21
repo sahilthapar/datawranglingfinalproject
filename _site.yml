@@ -1,0 +1,17 @@
+name: "sahilthapar-soccer-exploration"
+navbar:
+  title: "Exploring European Soccer Database"
+  type: inverse
+  left:
+    - text: "Introduction"
+      icon: fa-home
+      href: index.html
+    - text: "Data description"
+      href: data_description.html
+    - text: "About"
+      icon: fa-info
+      href: about.html
+  output:
+  html_document:
+    theme: cosmo
+    highlight: textmate

@@ -1,8 +1,7 @@
 ---
 title: "Exploring European Soccer Database"
 author: Sahil Thapar
-output:
-  html_document: default
+output: html_document
 ---
 
 ## Synopsis
@@ -24,7 +23,7 @@ __How leagues work?__
 * The team with the most points at the end of the season wins the league.  
 * The bottom 3 teams are replaced by the top-3 finishing teams from the second-tier league.  
 
-The data consists of multiple tables. You can find a full description of variables being used [here](http://rpubs.com/sahilthapar/228426).
+The data consists of multiple tables. You can find a full description of variables being used [here](data_description.html).
 
 ## Packages Required
 
@@ -39,7 +38,7 @@ library('lubridate')
 ```
 
 ## Importing the data
-```{r}
+```{r, cache = TRUE}
 
 temp <- tempfile()
 download.file("https://kaggle2.blob.core.windows.net/datasets/63/589/database.sqlite.zip",
