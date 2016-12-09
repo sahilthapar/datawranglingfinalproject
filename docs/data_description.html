@@ -70,6 +70,9 @@ h6 {
 </style>
 
 
+<link rel="stylesheet" href="site_libs/pagedtable-0.0.1/css/pagedtable.css"
+      type="text/css" />
+<script src="site_libs/pagedtable-0.0.1/js/pagedtable.js"></script>
 </head>
 
 <body>
@@ -187,7 +190,14 @@ $(document).ready(function () {
   </a>
 </li>
 <li>
-  <a href="data_description.html">Data description</a>
+  <a href="data_preparation.html">
+    <span class="fa fa-book"></span>
+     
+    Data Preparation
+  </a>
+</li>
+<li>
+  <a href="data_description.html">Data Description</a>
 </li>
 <li>
   <a href="about.html">
@@ -269,15 +279,31 @@ $(document).ready(function () {
 <ul>
 <li><strong>id:</strong> Integer, id for the match<br />
 </li>
-<li><strong>country_id:</strong> Integer, <strong>Foreign Key</strong>, id of the country that the match is played in.<br />
-</li>
+<li><strong>country_id:</strong> Integer, <strong>Foreign Key</strong>, id of the country that the match is played in.</li>
 <li><strong>league_id:</strong> Integer, <strong>Foreign Key</strong>, id of the league that the match is played in.<br />
 </li>
-<li><strong>season:</strong> String, season which the match was a part of.</li>
-<li><strong>date:</strong> String, date the match was played on.</li>
+<li><strong>season:</strong> Factor, season which the match was a part of (2008/2009 - 2015/2016).</li>
+<li><strong>stage:</strong> Factor, game number for the season (1 - 38).</li>
+<li><strong>date:</strong> Date, date the match was played on.</li>
 <li><strong>match_api_id:</strong> Integer, api id for the match.</li>
 <li><strong>home_team_api_id:</strong> Integer, api id for the home team.</li>
 <li><strong>away_team_api_id:</strong> Integer, api id for the away team.</li>
+<li><strong>home_team_goal</strong>: Integer, number of goals scored by the home team.</li>
+<li><strong>away_team_goal</strong>: Integer, number of goals scored by the away team.</li>
+<li><strong>goal</strong>: String, XML providing details of the goals in a match.</li>
+<li><strong>result</strong>: Factor, Levels = home, away, draw</li>
+</ul>
+</div>
+<div id="goals" class="section level2">
+<h2>Goals</h2>
+<ul>
+<li><strong>type</strong>: Factor, describing for the goal type</li>
+<li><strong>elapsed</strong>: Integer, minutes elapsed when the goal was scored</li>
+<li><strong>player1</strong>: Integer, player id of the goal scorer</li>
+<li><strong>player2</strong>: Integer, player id for the assist provider</li>
+<li><strong>subtype</strong>: Factor, describing the sub type for the goal</li>
+<li><strong>team</strong>: Integer, team id of the scoring team</li>
+<li>__match_id: Integer, match id</li>
 </ul>
 </div>
 

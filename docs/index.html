@@ -70,6 +70,9 @@ h6 {
 </style>
 
 
+<link rel="stylesheet" href="site_libs/pagedtable-0.0.1/css/pagedtable.css"
+      type="text/css" />
+<script src="site_libs/pagedtable-0.0.1/js/pagedtable.js"></script>
 </head>
 
 <body>
@@ -187,7 +190,14 @@ $(document).ready(function () {
   </a>
 </li>
 <li>
-  <a href="data_description.html">Data description</a>
+  <a href="data_preparation.html">
+    <span class="fa fa-book"></span>
+     
+    Data Preparation
+  </a>
+</li>
+<li>
+  <a href="data_description.html">Data Description</a>
 </li>
 <li>
   <a href="about.html">
@@ -214,17 +224,11 @@ $(document).ready(function () {
 </div>
 
 
-<div id="synopsis" class="section level2">
-<h2>Synopsis</h2>
-<p>This R Markdown Notebook is my project prosposal for the <a href="https://uc-r.github.io/data_wrangling/syllabus">Data Wrangling with R</a> I’m looking to explore European Soccer Database using dplyr and ggplot2 to predict the result of games using historical data.</p>
-</div>
-<div id="data-source" class="section level2">
-<h2>Data Source</h2>
-<p>The data used is provided through <a href="https://www.kaggle.com/hugomathien/soccer">Kaggle datasets</a>.</p>
-</div>
-<div id="about-the-data" class="section level2">
-<h2>About the data</h2>
-<p>The data gives information on matches played across 11 different leagues.</p>
+<div id="introduction" class="section level2 tabset">
+<h2>Introduction</h2>
+<div id="why-football" class="section level3">
+<h3>Why Football ?</h3>
+<p>Football (Soccer) is the most watched and played sport in the world. The <a href="http://www.fifa.com/worldcup/news/y=2015/m=12/news=2014-fifa-world-cuptm-reached-3-2-billion-viewers-one-billion-watched--2745519.html">2014 FIFA World Cup final was viewed by about 3.2 billion people</a>. European countries have the most followed club football leagues across the world and the English Premier League (EPL) is the most popular one.</p>
 <p><strong>How leagues work?</strong></p>
 <ul>
 <li>Each league consists of 20 teams that play 2 games (one at home ground, one at away ground) against every other team in a round-robin fashion i.e. every team plays a total of 38 games in a season.<br />
@@ -235,93 +239,32 @@ $(document).ready(function () {
 </li>
 <li>The bottom 3 teams are replaced by the top-3 finishing teams from the second-tier league.</li>
 </ul>
+<p>Using historical data, I would like to predict the result of games. Prediction of results is not only advantageous for betting, it can also give you bragging rights over your friends in <a href="https://fantasy.premierleague.com/">fantasy football</a>.</p>
+<p>I will employ <code>dplyr</code> and other <a href="">libraries</a> to clean up data and build some simple models to predict the result. The result for every match can be one of the following three</p>
+<ul>
+<li><strong>Home</strong>: Home team wins</li>
+<li><strong>Away</strong>: Away team wins</li>
+<li><strong>Draw</strong>: The game ends in a draw</li>
+</ul>
 <p>The data consists of multiple tables. You can find a full description of variables being used <a href="data_description.html">here</a>.</p>
 </div>
-<div id="packages-required" class="section level2">
-<h2>Packages Required</h2>
-<pre class="r"><code>library(&quot;RSQLite&quot;)
-library(&quot;dplyr&quot;)
-library(&quot;readr&quot;)
-library(&quot;tidyverse&quot;)
-library(&quot;tibble&quot;)
-library(&#39;stringr&#39;)
-library(&#39;lubridate&#39;)</code></pre>
+<div id="insights" class="section level3">
+<h3>Insights</h3>
 </div>
-<div id="importing-the-data" class="section level2">
-<h2>Importing the data</h2>
-<pre class="r"><code>temp &lt;- tempfile()
-download.file(&quot;https://kaggle2.blob.core.windows.net/datasets/63/589/database.sqlite.zip&quot;,
-              temp, method = &#39;curl&#39;)
-
-# Extract to get the sqlite file
-data &lt;- unzip(temp)
-filename &lt;- str_c(temp, str_sub(data, 2))
-
-# Connect to the sqlite file
-con = dbConnect(RSQLite::SQLite(), dbname = unzip(temp))
-# get a list of all tables
-dbListTables(con)</code></pre>
-<pre><code>## [1] &quot;Country&quot;           &quot;League&quot;            &quot;Match&quot;            
-## [4] &quot;Player&quot;            &quot;Player_Attributes&quot; &quot;Team&quot;             
-## [7] &quot;Team_Attributes&quot;   &quot;sqlite_sequence&quot;</code></pre>
-<pre class="r"><code># Read all tables
-myQuery &lt;- dbSendQuery(con, &quot;SELECT * FROM Player&quot;)
-Player &lt;- dbFetch(myQuery, n = -1)
-myQuery &lt;- dbSendQuery(con, &quot;SELECT * FROM Country&quot;)
-Country &lt;- dbFetch(myQuery, n = -1)
-myQuery &lt;- dbSendQuery(con, &quot;SELECT * FROM League&quot;)
-League &lt;- dbFetch(myQuery, n = -1)
-myQuery &lt;- dbSendQuery(con, &quot;SELECT * FROM Player_Attributes&quot;)
-Player_Attributes &lt;- dbFetch(myQuery, n = -1)
-myQuery &lt;- dbSendQuery(con, &quot;SELECT * FROM Match&quot;)
-Match &lt;- dbFetch(myQuery, n = -1)
-myQuery &lt;- dbSendQuery(con, &quot;SELECT * FROM Team_Attributes&quot;)
-Team_Attributes &lt;- dbFetch(myQuery, n = -1)
-myQuery &lt;- dbSendQuery(con, &quot;SELECT * FROM Team&quot;)
-Team &lt;- dbFetch(myQuery, n = -1)
-# Clean up the environment
-rm(temp, filename, data, con, myQuery)</code></pre>
+<div id="packages-required" class="section level3">
+<h3>Packages Required</h3>
+<pre class="r"><code>library(&quot;knitr&quot;) # To enable usage of R code chunks from ecternal file in the Rmd
+library(&quot;RSQLite&quot;) # Connecting to RSQLite
+library(&quot;dplyr&quot;)   # Working 
+library(&quot;readr&quot;)   # Reading and writing files
+library(&quot;tidyverse&quot;) # For all the tidying functions from the tidy universe
+library(&quot;tibble&quot;)    # For working with tibbles
+library(&#39;stringr&#39;)   # Working with strings and regex
+library(&#39;lubridate&#39;) # Working with dates
+read_chunk(&quot;code/data_collection.R&quot;)</code></pre>
 </div>
-<div id="data-cleaning" class="section level2">
-<h2>Data Cleaning</h2>
-<pre class="r"><code># Find the country id for England&#39;s Premier League
-England_id &lt;- League %&gt;% 
-  filter(name == &quot;England Premier League&quot;) %&gt;%
-  select(id) %&gt;%
-  as.double()
-
-# Filter the matches data for only England
-Match &lt;- Match %&gt;%
-  as_tibble %&gt;%
-  filter(league_id == England_id)
-
-# Match table has:
-# season column - this should be a factor variable
-# date column is a string - this should be a date variable
-# stage column - this should be a factor variable
-# result column - this new column is defined as:
-  # if home_goal &gt; away_goal : home
-  # else if home_goal == away_goal : draw
-  # else away
-
-getResult &lt;- function(home_goal, away_goal){
-  return (ifelse(home_goal &gt; away_goal,
-                 &#39;home&#39;,
-                 (ifelse(home_goal == away_goal,
-                         &#39;draw&#39;, &#39;away&#39;))
-  ))
-}
-
-tidy_Match &lt;- Match %&gt;%
-  mutate(season = (season %&gt;% factor(levels = unique(season))),
-         date = as.Date(date),
-         stage = (stage %&gt;% factor(levels = c(1:38))),
-         result =  getResult(home_team_goal, away_team_goal)) %&gt;% 
-  mutate(result = factor(result, levels = c(&quot;home&quot;, &quot;draw&quot;, &quot;away&quot;))) %&gt;%
-  select(matches(&quot;id|season|stage|date|result|team_goal|goal&quot;))</code></pre>
-</div>
-<div id="planned-analysis" class="section level2">
-<h2>Planned analysis</h2>
+<div id="planned-analysis" class="section level3">
+<h3>Planned analysis</h3>
 <ul>
 <li>Come up with a base model for predicting result</li>
 <li>Develop a naive model for predicting result</li>
@@ -330,6 +273,7 @@ tidy_Match &lt;- Match %&gt;%
 <li>Try developing a better model to predict results</li>
 <li>Develop Shiny app to explore team and player stats.</li>
 </ul>
+</div>
 </div>
 <div id="current-challenges" class="section level2">
 <h2>Current challenges</h2>

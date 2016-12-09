@@ -1,0 +1,200 @@
+---
+title: Data Preparation
+author: "Sahil Thapar"
+date: "12/9/2016"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r, echo = F}
+library("knitr") # To enable usage of R code chunks from ecternal file in the Rmd
+library("RSQLite") # Connecting to RSQLite
+library("dplyr")   # Working 
+library("readr")   # Reading and writing files
+library("tidyverse") # For all the tidying functions from the tidy universe
+library("tibble")    # For working with tibbles
+library('stringr')   # Working with strings and regex
+library('lubridate') # Working with dates
+library('forcats') # Working with factors
+library('XML') # Parsing XML data
+```
+
+This section describes the data in depth and pre-processing.
+
+### About the data
+
+The data used is provided through
+[Kaggle datasets](https://www.kaggle.com/hugomathien/soccer).
+
+The data gives detailed information on matches played across 11 different
+leagues. Finding data about soccer is easy with multiple resources but this data
+set was created to attempt to collate all the different information into a single
+database so as to enable data analytics and machine learning. The data is updated
+regularly. The original data consisted of 201 rows which can be seen at the
+[Kaggle dataset website](https://www.kaggle.com/hugomathien/soccer). We take a 
+small subset of the available tables and attributes which are of interest to us.
+The description for these can be found [here](docs/data_description.html).
+
+### Data Pecularities
+
+***
+
+## Data Cleaning {.tabset}
+
+### 1. Importing the data
+```{r, warning = F, cache = T}
+# Download the file to temp folder
+temp <- tempfile()
+download.file("https://kaggle2.blob.core.windows.net/datasets/63/589/database.sqlite.zip?sv=2015-12-11&sr=b&sig=btA9gYGczWR6SFFq6rG84Eok8jazkwa8JNwfYKAGtAc%3D&se=2016-12-12T16%3A25%3A12Z&sp=r",
+              temp, method = 'curl')
+
+# Connect to the sqlite file
+con = dbConnect(RSQLite::SQLite(), dbname = unzip(temp))
+# get a list of all tables
+dbListTables(con)
+
+# Read all tables
+myQuery <- dbSendQuery(con, "SELECT * FROM Player")
+Player <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Country")
+Country <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM League")
+League <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Player_Attributes")
+Player_Attributes <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Match")
+Match <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Team_Attributes")
+Team_Attributes <- dbFetch(myQuery, n = -1)
+myQuery <- dbSendQuery(con, "SELECT * FROM Team")
+Team <- dbFetch(myQuery, n = -1)
+# Clean up the environment
+rm(temp, con, myQuery)
+```
+
+### 2. EPL games
+
+We would like to filter out matches for only the England's top flight competition
+EPL (English Premier League)
+
+```{r}
+# Find the country id for England's Premier League
+England_id <- League %>% 
+  filter(name == "England Premier League") %>%
+  select(id) %>%
+  as.double()
+
+# Filter the matches data for only England
+Match <- Match %>%
+  as_tibble %>%
+  filter(league_id == England_id)
+```
+
+### 3. Fixing data types
+
+* The date column is a string, it needs to be converted to date type
+* The stage and season column should be converted to factor variables
+* The result column needs to be redefined with the help of a function `getResult` as:  
+
+    ```
+      if home_goal > away_goal : home
+      else if home_goal == away_goal : draw
+      else away
+    ```
+* We will also select a subset of the columns since not all of them are of interest to us
+  
+```{r}
+# result column - this needs to be redefined as a column using the following function
+getResult <- function(home_goal, away_goal){
+  return (ifelse(home_goal > away_goal,
+                 'home',
+                 (ifelse(home_goal == away_goal,
+                         'draw', 'away'))
+  ))
+}
+```
+
+```{r}
+
+# Match table has:
+# season column - this should be a factor variable
+# date column is a string - this should be a date variable
+# stage column - this should be a factor variable
+# we will then select only the columns that are of interest to us
+
+tidy_match <- Match %>%
+  mutate(season = (season %>% factor(levels = unique(season))),
+         date = as.Date(date),
+         stage = (stage %>% factor(levels = c(1:38))),
+         result =  getResult(home_team_goal, away_team_goal)) %>% 
+  mutate(result = factor(result, levels = c("home", "draw", "away"))) %>%
+  select(matches("id|season|stage|date|result|team_goal|goal"))
+
+```
+
+### 4. Parsing XML
+
+The goal column in the data frame is in xml form we will use the `xmlToDataFrame` function from the `XML` package __to convert this into a dataframe and will then bind all the dataframes into a single one using `bind_rows`__. This dataframe will provide us all the details of the goals scored in the match. The columns of this data frame are described [here](docs/data_description.html).
+
+```{r, warning = F, message = F}
+convertXMLtoDFAndAddMatchID <- function(goal_xml, match_id) {
+  df <- xmlToDataFrame(goal_xml)
+  if(nrow(df) > 0){
+    return(cbind(df, match_id = match_id))
+  }
+  return(df)
+}
+```
+
+__We will also recode the goal type so that the name is more descriptive__
+
+```{r, warning = F, message = F}
+Goals <- tidy_match$goal %>% 
+  map2(tidy_match$match_api_id, convertXMLtoDFAndAddMatchID) %>%
+  bind_rows() %>%
+  as_tibble %>%
+  transmute(
+    type = fct_recode(comment,
+      "normal" = "n",
+      "penalty" = "p",
+      "disallowed goal" = "dg",
+      "own goal" = "o",
+      "penalty saved" = "npm",
+      "penalty missed" = "psm",
+      "retake penalty" = "rp"
+    ),
+    elapsed = as.integer(elapsed),
+    player1 = as.integer(player1),
+    player2 = as.integer(player2),
+    subtype = factor(subtype, levels = unique(subtype)),
+    team = as.integer(team),
+    match_id = match_id
+  )
+```
+
+
+### 5. Quick look at the data
+
+We can now go ahead and delete the goal column from tidy_match and look at the two
+primary data frames we will be using.
+
+```{r}
+tidy_match <- tidy_match %>% select(-goal)
+
+tidy_match
+
+Goals
+```
+
+### 6. Summary
+
+
+
+
+

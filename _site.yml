@@ -7,7 +7,10 @@ navbar:
     - text: "Introduction"
       icon: fa-home
       href: index.html
-    - text: "Data description"
+    - text: "Data Preparation"
+      icon: fa-book
+      href: data_preparation.html
+    - text: "Data Description"
       href: data_description.html
     - text: "About"
       icon: fa-info

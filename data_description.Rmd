@@ -2,7 +2,8 @@
 title: "European Football Database - Data Description"
 author: "Sahil Thapar"
 output:
-  html_document: default
+  html_document:
+    df_print: paged
 ---
 
 ## Player:
@@ -39,11 +40,26 @@ output:
 ## Match:
 
 * __id:__ Integer, id for the match  
-* __country_id:__ Integer, __Foreign Key__, id of the country that the match is played in.  
+* __country_id:__ Integer, __Foreign Key__, id of the country that the match is played in.
 * __league_id:__ Integer, __Foreign Key__, id of the league that the match is played in.  
-* __season:__ String, season which the match was a part of.
-* __date:__ String, date the match was played on.
+* __season:__ Factor, season which the match was a part of (2008/2009 - 2015/2016).
+* __stage:__ Factor, game number for the season (1 - 38).
+* __date:__ Date, date the match was played on.
 * __match_api_id:__ Integer, api id for the match.
 * __home_team_api_id:__ Integer, api id for the home team.
 * __away_team_api_id:__ Integer, api id for the away team.
+* __home_team_goal__: Integer, number of goals scored by the home team.
+* __away_team_goal__: Integer, number of goals scored by the away team.
+* __goal__: String, XML providing details of the goals in a match.
+* __result__: Factor, Levels = home, away, draw
+
+## Goals
+
+* __type__: Factor, describing for the goal type
+* __elapsed__: Integer, minutes elapsed when the goal was scored
+* __player1__: Integer, player id of the goal scorer
+* __player2__: Integer, player id for the assist provider
+* __subtype__: Factor, describing the sub type for the goal
+* __team__: Integer, team id of the scoring team
+* __match_id: Integer, match id
 
