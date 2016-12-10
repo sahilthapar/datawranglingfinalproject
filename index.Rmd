@@ -37,10 +37,24 @@ models to predict the result. The result for every match can be one of the follo
 * __Away__: Away team wins
 * __Draw__: The game ends in a draw
 
-The data consists of multiple tables. You can find a full description of variables being used [here](https://sahilthapar.github.io/datawranglingfinalproject/data_description.html).
+The data consists of multiple tables. You can find a full description of variables being used [here](docs/data_description.html).
 
 ### Insights
+* Taller players tend to score more goals
 
+* Wayne Rooney, Sergio Aguero, Robin Van Persie, Frank Lampard stand out as top scorers compared to the number of games they play
+
+* Manchester United is the most successful team over the last 8 years
+
+* Aston Villa allows the most goals. (They were relegated last season)
+
+* Manchester City scores the most goals from penalties.
+
+* Robin Van Persie and Sergio Aguero score the most goals in the first 15 minutes of the game while Frank Lampard is the best player to play the last 15 minutes.
+
+* Steven Gerrard and Frank Lampard have both scored 25 goals from the penalty spot.
+
+* Most goals that are not normal shots are either headers or long range goals.
 
 ### Packages Required
 

@@ -14,17 +14,12 @@
 
 <title>Exploring Data</title>
 
-<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/htmlwidgets-0.7/htmlwidgets.js"></script>
-<script src="site_libs/datatables-binding-0.2/datatables.js"></script>
-<link href="site_libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="site_libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="site_libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -75,6 +70,9 @@ h6 {
 </style>
 
 
+<link rel="stylesheet" href="site_libs/pagedtable-0.0.1/css/pagedtable.css"
+      type="text/css" />
+<script src="site_libs/pagedtable-0.0.1/js/pagedtable.js"></script>
 </head>
 
 <body>
@@ -233,7 +231,6 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Exploring Data</h1>
 <h4 class="author"><em>Sahil Thapar</em></h4>
-<h4 class="date"><em>12/9/2016</em></h4>
 
 </div>
 
@@ -266,9 +263,37 @@ tidy_match %&gt;%
   summarize(wins = n()) %&gt;%
   arrange(desc(wins)) %&gt;%
   top_n(5, wt = wins) %&gt;%
-  DT::datatable()</code></pre>
-<div id="htmlwidget-a606ab82267863431ee7" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a606ab82267863431ee7">{"x":{"filter":"none","data":[["1","2","3","4","5"],["Manchester United","Chelsea","Manchester City","Arsenal","Tottenham Hotspur"],[192,176,175,170,151]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>Team\u003c/th>\n      <th>wins\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+  kable</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Team</th>
+<th align="right">wins</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Manchester United</td>
+<td align="right">192</td>
+</tr>
+<tr class="even">
+<td align="left">Chelsea</td>
+<td align="right">176</td>
+</tr>
+<tr class="odd">
+<td align="left">Manchester City</td>
+<td align="right">175</td>
+</tr>
+<tr class="even">
+<td align="left">Arsenal</td>
+<td align="right">170</td>
+</tr>
+<tr class="odd">
+<td align="left">Tottenham Hotspur</td>
+<td align="right">151</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="which-team-has-scored-the-most-goals-at-home-away" class="section level4">
 <h4>Which team has scored the most goals? At home? Away ?</h4>
@@ -288,9 +313,49 @@ home_goals_scored %&gt;%
   mutate(total_goals = home_goals + away_goals) %&gt;%
   arrange(desc(total_goals)) %&gt;%
   top_n(5, wt = total_goals) %&gt;%
-  DT::datatable()</code></pre>
-<div id="htmlwidget-decaa7789767fe272c9b" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-decaa7789767fe272c9b">{"x":{"filter":"none","data":[["1","2","3","4","5"],["Manchester City","Chelsea","Manchester United","Arsenal","Liverpool"],[365,333,338,306,294],[241,250,244,267,237],[606,583,582,573,531]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>team_long_name\u003c/th>\n      <th>home_goals\u003c/th>\n      <th>away_goals\u003c/th>\n      <th>total_goals\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+  kable</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">team_long_name</th>
+<th align="right">home_goals</th>
+<th align="right">away_goals</th>
+<th align="right">total_goals</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Manchester City</td>
+<td align="right">365</td>
+<td align="right">241</td>
+<td align="right">606</td>
+</tr>
+<tr class="even">
+<td align="left">Chelsea</td>
+<td align="right">333</td>
+<td align="right">250</td>
+<td align="right">583</td>
+</tr>
+<tr class="odd">
+<td align="left">Manchester United</td>
+<td align="right">338</td>
+<td align="right">244</td>
+<td align="right">582</td>
+</tr>
+<tr class="even">
+<td align="left">Arsenal</td>
+<td align="right">306</td>
+<td align="right">267</td>
+<td align="right">573</td>
+</tr>
+<tr class="odd">
+<td align="left">Liverpool</td>
+<td align="right">294</td>
+<td align="right">237</td>
+<td align="right">531</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="which-team-has-allowed-the-most-goals-at-home-away" class="section level4">
 <h4>Which team has allowed the most goals? At home ? Away ?</h4>
@@ -311,9 +376,49 @@ select(c(team_long_name, home_goals_allowed, away_goals_allowed)) %&gt;%
 mutate(total_goals_allowed = home_goals_allowed + away_goals_allowed) %&gt;%
 arrange(desc(total_goals_allowed)) %&gt;%
 top_n(5, wt = total_goals_allowed) %&gt;%
-DT::datatable()</code></pre>
-<div id="htmlwidget-a606ab82267863431ee7" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a606ab82267863431ee7">{"x":{"filter":"none","data":[["1","2","3","4","5"],["Aston Villa","Sunderland","Newcastle United","West Bromwich Albion","Stoke City"],[198,181,183,189,159],[264,260,239,216,242],[462,441,422,405,401]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>team_long_name\u003c/th>\n      <th>home_goals_allowed\u003c/th>\n      <th>away_goals_allowed\u003c/th>\n      <th>total_goals_allowed\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+kable</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">team_long_name</th>
+<th align="right">home_goals_allowed</th>
+<th align="right">away_goals_allowed</th>
+<th align="right">total_goals_allowed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aston Villa</td>
+<td align="right">198</td>
+<td align="right">264</td>
+<td align="right">462</td>
+</tr>
+<tr class="even">
+<td align="left">Sunderland</td>
+<td align="right">181</td>
+<td align="right">260</td>
+<td align="right">441</td>
+</tr>
+<tr class="odd">
+<td align="left">Newcastle United</td>
+<td align="right">183</td>
+<td align="right">239</td>
+<td align="right">422</td>
+</tr>
+<tr class="even">
+<td align="left">West Bromwich Albion</td>
+<td align="right">189</td>
+<td align="right">216</td>
+<td align="right">405</td>
+</tr>
+<tr class="odd">
+<td align="left">Stoke City</td>
+<td align="right">159</td>
+<td align="right">242</td>
+<td align="right">401</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="which-team-scores-the-most-goals-in-first-15-minutes-last-15-minutes" class="section level4">
 <h4>Which team scores the most goals in first 15 minutes? Last 15 minutes ?</h4>
@@ -340,9 +445,48 @@ Goals %&gt;%
   summarize(goals = n()) %&gt;%
   arrange(phase, desc(goals)) %&gt;%
   top_n(1) %&gt;%
-  DT::datatable()</code></pre>
-<div id="htmlwidget-a606ab82267863431ee7" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a606ab82267863431ee7">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],[1,2,3,4,5,6],["Manchester City","Manchester United","Arsenal","Chelsea","Manchester City","Arsenal"],[77,90,91,117,210,51]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>phase\u003c/th>\n      <th>team_long_name\u003c/th>\n      <th>goals\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+  kable</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">phase</th>
+<th align="left">team_long_name</th>
+<th align="right">goals</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">Manchester City</td>
+<td align="right">77</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">Manchester United</td>
+<td align="right">90</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">Arsenal</td>
+<td align="right">91</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Chelsea</td>
+<td align="right">117</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">Manchester City</td>
+<td align="right">210</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">Arsenal</td>
+<td align="right">51</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="which-team-scores-the-most-penalties" class="section level4">
 <h4>Which team scores the most penalties?</h4>
@@ -353,9 +497,37 @@ Goals %&gt;%
   summarize(goals = n()) %&gt;%
   arrange(desc(goals)) %&gt;%
   top_n(5) %&gt;%
-  DT::datatable()</code></pre>
-<div id="htmlwidget-a606ab82267863431ee7" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a606ab82267863431ee7">{"x":{"filter":"none","data":[["1","2","3","4","5"],["Manchester City","Chelsea","Liverpool","Manchester United","Everton"],[48,45,37,37,30]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> \u003c/th>\n      <th>team_long_name\u003c/th>\n      <th>goals\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+  kable</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">team_long_name</th>
+<th align="right">goals</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Manchester City</td>
+<td align="right">48</td>
+</tr>
+<tr class="even">
+<td align="left">Chelsea</td>
+<td align="right">45</td>
+</tr>
+<tr class="odd">
+<td align="left">Liverpool</td>
+<td align="right">37</td>
+</tr>
+<tr class="even">
+<td align="left">Manchester United</td>
+<td align="right">37</td>
+</tr>
+<tr class="odd">
+<td align="left">Everton</td>
+<td align="right">30</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="player-analysis" class="section level3">
@@ -464,12 +636,26 @@ Goals %&gt;%
   mutate(height = ifelse(height &gt; mean(height, na.rm = T), &quot;tall&quot;, &quot;short&quot;)) %&gt;%
   group_by(height, player_name) %&gt;%
   summarize(avg_goals = n()) %&gt;%
-  summarize(avg_goals = round(mean(avg_goals), 2))</code></pre>
-<pre><code>## # A tibble: 2 × 2
-##   height avg_goals
-##    &lt;chr&gt;     &lt;dbl&gt;
-## 1  short      8.51
-## 2   tall      9.35</code></pre>
+  summarize(avg_goals = round(mean(avg_goals), 2)) %&gt;%
+  kable</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">height</th>
+<th align="right">avg_goals</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">short</td>
+<td align="right">8.51</td>
+</tr>
+<tr class="even">
+<td align="left">tall</td>
+<td align="right">9.35</td>
+</tr>
+</tbody>
+</table>
 <p>We see that there is a slight advantage in being taller than average when it comes to scoring goals.</p>
 </div>
 <div id="how-are-the-players-divided-by-matches-vs-goals" class="section level4">
@@ -513,13 +699,30 @@ geom_text(data = subset(players_matches_goals, highlight),
 <h4>What is the home advantage in the game of football ?</h4>
 <pre class="r"><code>tidy_match %&gt;%
   group_by(result) %&gt;%
-  summarize(percentage = round((n()/nrow(tidy_match)) * 100, 2))</code></pre>
-<pre><code>## # A tibble: 3 × 2
-##   result percentage
-##   &lt;fctr&gt;      &lt;dbl&gt;
-## 1   home      45.72
-## 2   draw      25.76
-## 3   away      28.52</code></pre>
+  summarize(percentage = round((n()/nrow(tidy_match)) * 100, 2)) %&gt;%
+  kable</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">result</th>
+<th align="right">percentage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">home</td>
+<td align="right">45.72</td>
+</tr>
+<tr class="even">
+<td align="left">draw</td>
+<td align="right">25.76</td>
+</tr>
+<tr class="odd">
+<td align="left">away</td>
+<td align="right">28.52</td>
+</tr>
+</tbody>
+</table>
 <p>We see that the <strong>home team wins about 46%</strong> of the games and <strong>draws 26%</strong> of the time. The home team <strong>loses 28%</strong> of the games.</p>
 </div>
 </div>

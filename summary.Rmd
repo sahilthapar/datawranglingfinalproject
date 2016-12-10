@@ -1,15 +1,21 @@
 ---
 title: "Summary"
 author: "Sahil Thapar"
-date: "12/10/2016"
-output: html_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(cache = TRUE)
 ```
-We analysed the European Soccer Database to arrive at the following insights,
+I analysed the European Soccer Database to get some insights into the team and player stats.
+
+I used a combination of `dplyr`, `ggplot2`, `stringr`, `XML` to manipulate data and extract the information desired from the data.
+
+Here are some of the insights obtained:
+
 * __Scoring at home__, the average number of goals scored per game by the home team is `r round(mean(tidy_match$home_team_goal), 2)` while the median number of goals is `r median(tidy_match$home_team_goal)`
 
 * __Scoring away from home__, the average number of goals scored per game by the away team is `r round(mean(tidy_match$away_team_goal), 2)` while the median number of goals is `r median(tidy_match$away_team_goal)`
@@ -30,6 +36,18 @@ We analysed the European Soccer Database to arrive at the following insights,
 
 * Manchester City is the most prolific team i.e. they score the most goals
 
-* Manchester United allows the most goals
+* Aston Villa allows the most goals. (They were relegated last season)
 
-*
+* Manchester City scores maximum goals during mins 0 - 15 and 60 - 75.
+
+* Manchester City scores the most goals from penalties.
+
+* Robin Van Persie and Sergio Aguero score the most goals in the first 15 minutes of the game while Frank Lampard is the best player to play the last 15 minutes.
+
+* Steven Gerrard and Frank Lampard have both scored 25 goals from the penalty spot.
+
+* Most goals that are not normal shots are either headers or long range goals.
+
+* Taller players tend to score more goals
+
+* Wayne Rooney, Sergio Aguero, Robin Van Persie, Frank Lampard stand out as top scorers compared to the number of games they play

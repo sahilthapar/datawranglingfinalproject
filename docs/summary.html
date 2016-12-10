@@ -11,7 +11,6 @@
 
 <meta name="author" content="Sahil Thapar" />
 
-<meta name="date" content="2016-12-10" />
 
 <title>Summary</title>
 
@@ -71,6 +70,9 @@ h6 {
 </style>
 
 
+<link rel="stylesheet" href="site_libs/pagedtable-0.0.1/css/pagedtable.css"
+      type="text/css" />
+<script src="site_libs/pagedtable-0.0.1/js/pagedtable.js"></script>
 </head>
 
 <body>
@@ -229,13 +231,15 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Summary</h1>
 <h4 class="author"><em>Sahil Thapar</em></h4>
-<h4 class="date"><em>12/10/2016</em></h4>
 
 </div>
 
 
-<p>We analysed the European Soccer Database to arrive at the following insights, * <strong>Scoring at home</strong>, the average number of goals scored per game by the home team is 1.55 while the median number of goals is 1</p>
+<p>I analysed the European Soccer Database to get some insights into the team and player stats.</p>
+<p>I used a combination of <code>dplyr</code>, <code>ggplot2</code>, <code>stringr</code>, <code>XML</code> to manipulate data and extract the information desired from the data.</p>
+<p>Here are some of the insights obtained:</p>
 <ul>
+<li><p><strong>Scoring at home</strong>, the average number of goals scored per game by the home team is 1.55 while the median number of goals is 1</p></li>
 <li><p><strong>Scoring away from home</strong>, the average number of goals scored per game by the away team is 1.16 while the median number of goals is 1</p></li>
 <li><p><strong>Scoring</strong>, the average number of together by the home and away team is 2.71 while the median number of goals is 2</p></li>
 <li>Let us take a look at the results now:
@@ -251,8 +255,14 @@ $(document).ready(function () {
 <li><p>A total of <strong>8247</strong> goals were recorded in the last <strong>8 years</strong>.</p></li>
 <li><p>Manchester United is the most successful team over the last 8 years</p></li>
 <li><p>Manchester City is the most prolific team i.e. they score the most goals</p></li>
-<li><p>Manchester United allows the most goals</p></li>
-<li></li>
+<li><p>Aston Villa allows the most goals. (They were relegated last season)</p></li>
+<li><p>Manchester City scores maximum goals during mins 0 - 15 and 60 - 75.</p></li>
+<li><p>Manchester City scores the most goals from penalties.</p></li>
+<li><p>Robin Van Persie and Sergio Aguero score the most goals in the first 15 minutes of the game while Frank Lampard is the best player to play the last 15 minutes.</p></li>
+<li><p>Steven Gerrard and Frank Lampard have both scored 25 goals from the penalty spot.</p></li>
+<li><p>Most goals that are not normal shots are either headers or long range goals.</p></li>
+<li><p>Taller players tend to score more goals</p></li>
+<li><p>Wayne Rooney, Sergio Aguero, Robin Van Persie, Frank Lampard stand out as top scorers compared to the number of games they play</p></li>
 </ul>
 
 

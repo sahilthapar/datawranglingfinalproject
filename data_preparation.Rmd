@@ -1,9 +1,9 @@
 ---
 title: Data Preparation
 author: "Sahil Thapar"
-date: "12/9/2016"
 output:
-  html_document
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -22,7 +22,6 @@ library('stringr')   # Working with strings and regex
 library('lubridate') # Working with dates
 library('forcats') # Working with factors
 library('XML') # Parsing XML data
-library('DT') # For printing data tables
 ```
 
 This section describes the data in depth and pre-processing.
@@ -39,7 +38,7 @@ database so as to enable data analytics and machine learning. The data is update
 regularly. The original data consisted of 201 rows which can be seen at the
 [Kaggle dataset website](https://www.kaggle.com/hugomathien/soccer). We take a 
 small subset of the available tables and attributes which are of interest to us.
-The description for these can be found [here](https://sahilthapar.github.io/datawranglingfinalproject/data_description.html).
+The description for these can be found [here](docs/data_description.html).
 
 ***
 
@@ -145,7 +144,7 @@ tidy_match <- Match %>%
 
 ### 5. Parsing XML
 
-The goal column in the data frame is in XML form and we will use the `xmlToDataFrame` function from the `XML` package __to convert this into a dataframe and will then bind all the dataframes into a single one using `bind_rows`__. This dataframe will provide us all the details of the goals scored in the match. The columns of this data frame are described [here](https://sahilthapar.github.io/datawranglingfinalproject/data_description.html).
+The goal column in the data frame is in XML form and we will use the `xmlToDataFrame` function from the `XML` package __to convert this into a dataframe and will then bind all the dataframes into a single one using `bind_rows`__. This dataframe will provide us all the details of the goals scored in the match. The columns of this data frame are described [here](docs/data_description.html).
 
 ```{r, warning = F, message = F}
 convertXMLtoDFAndAddMatchID <- function(goal_xml, match_id) {
@@ -226,7 +225,8 @@ Goals %>%
   summarize(
     goals = n()) %>%
   arrange(desc(goals)) %>%
-  top_n(3, wt = goals)
+  top_n(3, wt = goals) %>%
+  kable
 ```
   
 ```{r}
@@ -237,7 +237,8 @@ Goals %>%
   summarize(
     goals = n()) %>%
   arrange(desc(goals)) %>%
-  top_n(3, wt = goals)
+  top_n(3, wt = goals) %>%
+  kable
 ```
 
 

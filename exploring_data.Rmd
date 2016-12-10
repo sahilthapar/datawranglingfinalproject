@@ -1,8 +1,9 @@
 ---
 title: "Exploring Data"
 author: "Sahil Thapar"
-date: "12/9/2016"
-output: html_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -137,7 +138,7 @@ tidy_match %>%
   summarize(wins = n()) %>%
   arrange(desc(wins)) %>%
   top_n(5, wt = wins) %>%
-  DT::datatable()
+  kable
 ```
 
 #### Which team has scored the most goals? At home? Away ?
@@ -159,7 +160,7 @@ home_goals_scored %>%
   mutate(total_goals = home_goals + away_goals) %>%
   arrange(desc(total_goals)) %>%
   top_n(5, wt = total_goals) %>%
-  DT::datatable()
+  kable
 
 ```
 
@@ -183,7 +184,7 @@ select(c(team_long_name, home_goals_allowed, away_goals_allowed)) %>%
 mutate(total_goals_allowed = home_goals_allowed + away_goals_allowed) %>%
 arrange(desc(total_goals_allowed)) %>%
 top_n(5, wt = total_goals_allowed) %>%
-DT::datatable()
+kable
 ```
 
 #### Which team scores the most goals in first 15 minutes? Last 15 minutes ?
@@ -211,7 +212,7 @@ Goals %>%
   summarize(goals = n()) %>%
   arrange(phase, desc(goals)) %>%
   top_n(1) %>%
-  DT::datatable()
+  kable
 ```
 
 
@@ -224,7 +225,7 @@ Goals %>%
   summarize(goals = n()) %>%
   arrange(desc(goals)) %>%
   top_n(5) %>%
-  DT::datatable()
+  kable
 ```
 
 
@@ -342,7 +343,8 @@ Goals %>%
   mutate(height = ifelse(height > mean(height, na.rm = T), "tall", "short")) %>%
   group_by(height, player_name) %>%
   summarize(avg_goals = n()) %>%
-  summarize(avg_goals = round(mean(avg_goals), 2))
+  summarize(avg_goals = round(mean(avg_goals), 2)) %>%
+  kable
 ```
 
 We see that there is a slight advantage in being taller than average when it comes to scoring goals.
@@ -389,7 +391,8 @@ geom_text(data = subset(players_matches_goals, highlight),
 ```{r}
 tidy_match %>%
   group_by(result) %>%
-  summarize(percentage = round((n()/nrow(tidy_match)) * 100, 2))
+  summarize(percentage = round((n()/nrow(tidy_match)) * 100, 2)) %>%
+  kable
 ```
 
 We see that the __home team wins about 46%__ of the games and __draws 26%__ of the time.
