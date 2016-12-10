@@ -36,7 +36,7 @@ models to predict the result. The result for every match can be one of the follo
 * __Away__: Away team wins
 * __Draw__: The game ends in a draw
 
-The data consists of multiple tables. You can find a full description of variables being used [here](data_description.html).
+The data consists of multiple tables. You can find a full description of variables being used [here](https://sahilthapar.github.io/datawranglingfinalproject/data_description.html).
 
 ### Insights
 
@@ -64,6 +64,3 @@ read_chunk("code/data_collection.R")
 * Find most prolific teams, players
 * Try developing a better model to predict results
 * Develop Shiny app to explore team and player stats.
-
-## Current challenges
-The goal field in the Match table is in xml form. Extracting useful information from this is not simple.

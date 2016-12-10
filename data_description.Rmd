@@ -61,5 +61,5 @@ output:
 * __player2__: Integer, player id for the assist provider
 * __subtype__: Factor, describing the sub type for the goal
 * __team__: Integer, team id of the scoring team
-* __match_id: Integer, match id
+* __match_id__: Integer, match id
 

@@ -118,9 +118,9 @@ Goals <- tidy_match$goal %>%
     match_id = match_id
   )
 
-tidy_Match %>%
-  group_by(result) %>%
-  summarize(perc = (n() / nrow(.)) * 100)
+# tidy_match %>%
+#   group_by(result) %>%
+#   summarize(perc = (n() / nrow(.)) * 100)
 
 
 # tmp <- str_match_all(x, "<goal_type>(.+?)<//goal_type>")
@@ -136,3 +136,42 @@ tidy_Match %>%
 #                              }))
 # tidy_Match$goal_type <- tmp_goal_type
 # tidy_Match$goal_subtype <- tmp_goal_subtype
+
+summary(tidy_match$home_team_goal)
+summary(tidy_match$away_team_goal)
+summary(tidy_match$home_team_goal + tidy_match$away_team_goal)
+
+# Top 3 goal types
+Goals %>%
+  group_by(type) %>%
+  summarize(
+    goals = n()) %>%
+  arrange(desc(goals))
+top_n(3, wt = goals)
+
+# Top 3 subtypes for normal goals
+Goals %>%
+  group_by(subtype) %>%
+  filter(type == "normal") %>%
+  summarize(
+    goals = n()) %>%
+  arrange(desc(goals))
+top_n(3, wt = goals)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

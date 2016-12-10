@@ -8,10 +8,11 @@ navbar:
       icon: fa-home
       href: index.html
     - text: "Data Preparation"
-      icon: fa-book
+      icon: fa-scissors
       href: data_preparation.html
     - text: "Data Description"
       href: data_description.html
+      icon: fa-book
     - text: "About"
       icon: fa-info
       href: about.html
