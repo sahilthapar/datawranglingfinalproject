@@ -9,5 +9,27 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(cache = TRUE)
 ```
+We analysed the European Soccer Database to arrive at the following insights,
+* __Scoring at home__, the average number of goals scored per game by the home team is `r round(mean(tidy_match$home_team_goal), 2)` while the median number of goals is `r median(tidy_match$home_team_goal)`
 
+* __Scoring away from home__, the average number of goals scored per game by the away team is `r round(mean(tidy_match$away_team_goal), 2)` while the median number of goals is `r median(tidy_match$away_team_goal)`
 
+* __Scoring__, the average number of together by the home and away team is `r round(mean(tidy_match$home_team_goal) + mean(tidy_match$away_team_goal), 2)` while the median number of goals is `r median(tidy_match$home_team_goal) + median(tidy_match$away_team_goal)`
+
+* Let us take a look at the results now:
+    + __Home win__: `r sum(tidy_match$result == 'home')`, 46%
+    + __Draw__: `r sum(tidy_match$result == 'draw')`, 26%
+    + __Away win__: `r sum(tidy_match$result == 'away')`, 28%
+    
+* __When are the goals scored ?__
+    + __50%__ of the goals are scored in the first __`r median(Goals$elapsed)` minutes__ of the 90 minute game and about __25%__ are scored in the last __`r 90 - summary(Goals$elapsed)[5]` minutes__.
+
+* A total of __`r sum(Goals$type %in% c("normal", "penalty", "own goal"))`__ goals were recorded in the last __`r length(unique(tidy_match$season))` years__.
+
+* Manchester United is the most successful team over the last 8 years
+
+* Manchester City is the most prolific team i.e. they score the most goals
+
+* Manchester United allows the most goals
+
+*
