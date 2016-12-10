@@ -5,6 +5,7 @@ output:
   html_document:
     df_print: paged
 ---
+<img src="https://d2lm6fxwu08ot6.cloudfront.net/img-thumbs/960w/LHHL7FKKVD.jpg" alt="Drawing" style="height: 50px, width: 500px;"/>
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(cache = TRUE)
 knitr::opts_chunk$set(echo = TRUE)
@@ -52,15 +53,4 @@ library("tidyverse") # For all the tidying functions from the tidy universe
 library("tibble")    # For working with tibbles
 library('stringr')   # Working with strings and regex
 library('lubridate') # Working with dates
-read_chunk("code/data_collection.R")
 ```
-
-
-### Planned analysis
-
-* Come up with a base model for predicting result
-* Develop a naive model for predicting result
-* Find most successful teams - overall and grouped by season
-* Find most prolific teams, players
-* Try developing a better model to predict results
-* Develop Shiny app to explore team and player stats.

@@ -144,8 +144,7 @@ summary(tidy_match$home_team_goal + tidy_match$away_team_goal)
 # Top 3 goal types
 Goals %>%
   group_by(type) %>%
-  summarize(
-    goals = n()) %>%
+  summarize(goals = n()) %>%
   arrange(desc(goals))
 top_n(3, wt = goals)
 
@@ -153,25 +152,236 @@ top_n(3, wt = goals)
 Goals %>%
   group_by(subtype) %>%
   filter(type == "normal") %>%
-  summarize(
-    goals = n()) %>%
+  summarize(goals = n()) %>%
   arrange(desc(goals))
 top_n(3, wt = goals)
 
+getWinner <- function(home_team_id, away_team_id, result) {
+  return(ifelse(
+    result == 'draw',
+    NA,
+    ifelse(result == 'home', home_team_id, away_team_id)
+  ))
+}
+
+tidy_match <-
+  tidy_match %>%
+  mutate(winner = getWinner(home_team_api_id, away_team_api_id, result))
+
+tidy_match %>%
+  left_join(Team, c("winner" = "team_api_id")) %>%
+  select(matches("team_long_name")) %>%
+  na.omit %>%
+  group_by(Team = team_long_name) %>%
+  summarize(wins = n()) %>%
+  arrange(desc(wins)) %>%
+  top_n(5, wt = wins)
+
+# Top scoring teams
+home_goals_scored <- tidy_match %>%
+  group_by(home_team_api_id) %>%
+  summarize(home_goals = sum(home_team_goal))
+
+away_goals_scored <- tidy_match %>%
+  group_by(away_team_api_id) %>%
+  summarize(away_goals = sum(away_team_goal))
+
+home_goals_scored %>%
+  left_join(away_goals_scored, c("home_team_api_id" = "away_team_api_id")) %>%
+  left_join(Team, c("home_team_api_id" = "team_api_id")) %>%
+  select(c(team_long_name, home_goals, away_goals)) %>%
+  mutate(total_goals = home_goals + away_goals) %>%
+  arrange(desc(total_goals)) %>%
+  top_n(5, wt = total_goals)
+
+# Which team has allowed the most goals? At home ? Away ? Least ?
+home_goals_allowed <- tidy_match %>%
+  group_by(home_team_api_id) %>%
+  summarize(home_goals_allowed = sum(away_team_goal))
+
+away_goals_allowed <- tidy_match %>%
+  group_by(away_team_api_id) %>%
+  summarize(away_goals_allowed = sum(home_team_goal))
+
+home_goals_allowed %>%
+  left_join(away_goals_allowed,
+            c("home_team_api_id" = "away_team_api_id")) %>%
+  left_join(Team, c("home_team_api_id" = "team_api_id")) %>%
+  select(c(team_long_name, home_goals_allowed, away_goals_allowed)) %>%
+  mutate(total_goals_allowed = home_goals_allowed + away_goals_allowed) %>%
+  arrange(desc(total_goals_allowed)) %>%
+  top_n(5, wt = total_goals_allowed)
+
+# * Which team scores the most goals in first sixth? Last Sixth ? Least?
+findPhase <- function(time) {
+  return(ifelse(time < 15, 1,
+                ifelse(time < 30, 2,
+                       ifelse(
+                         time < 45, 3,
+                         ifelse(time < 60, 4,
+                                ifelse(time < 90, 5, 6))
+                       ))))
+}
+Goals <- 
+  Goals %>%
+  filter(type %in% c("normal", "penalty", "own goal")) %>%
+  mutate(phase = findPhase(elapsed))
+
+Goals %>%  
+  left_join(Team, c('team' = 'team_api_id')) %>%
+  group_by(phase, team_long_name) %>%
+  summarize(goals = n()) %>%
+  arrange(phase, desc(goals)) %>%
+  top_n(1)
+  
+Goals %>%
+  filter(type == 'penalty') %>%
+  left_join(Team, c('team' = 'team_api_id')) %>%
+  group_by(team_long_name) %>%
+  summarize(goals = n()) %>%
+  arrange(desc(goals)) %>%
+  top_n(5)
+
+# * Which player has scored the most goals?
+
+Goals %>%
+  filter(type %in% c('penalty', 'normal')) %>%
+  group_by(player = player1) %>%
+  summarize(goals = n()) %>%
+  left_join(Player, c('player' = 'player_api_id')) %>%
+  select(c(player_name, goals)) %>%
+  arrange(goals) %>%
+  top_n(10, goals) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = reorder(player_name, goals),
+                         y = goals),
+           stat = "identity",
+           fill = "#3498db",
+           alpha = 0.9,
+           width = 0.5) +
+  coord_flip() +
+  theme_minimal() +
+  labs(x = "Player", y = "Goals") +
+  ggtitle("Top 10 Scorers")
+  
+  
+# Which player should you start with ? (scores the most goals in first sixth?)
+# Which player should you end with ? (scores the most goals in last sixth?
+Goals %>%
+  group_by(phase, player = player1) %>%
+  summarize(goals = n()) %>%
+  left_join(Player, c('player' = 'player_api_id')) %>%
+  select(c(player_name, goals, phase)) %>%
+  arrange(goals) %>%
+  top_n(2, goals) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = phase,
+                         y = goals,
+                         fill = player_name),
+           stat = "identity",
+           alpha = 0.9,
+           position = 'dodge',
+           width = 0.5) +
+  scale_fill_manual(values = c("#2980b9", "#f1c40f", "#bdc3c7", "#8e44ad", "#e74c3c" )) +
+  coord_flip() +
+  theme_minimal() +
+  labs(x = "Phase", y = "Goals") +
+  ggtitle("Top Scorers in phases")
+
+# * Who is the best penalty taker ?
+
+Goals %>%
+  filter(type == "penalty") %>%
+  group_by(player = player1) %>%
+  summarize(goals = n()) %>%
+  left_join(Player, c('player' = 'player_api_id')) %>%
+  select(c(player_name, goals)) %>%
+  arrange(goals) %>%
+  top_n(5, goals) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = reorder(player_name, goals),
+                         y = goals),
+           stat = "identity",
+           alpha = 0.9,
+           fill = "#74AFAD",
+           position = 'dodge',
+           width = 0.25) +
+  scale_fill_manual(values = c("#2980b9", "#f1c40f", "#bdc3c7", "#8e44ad", "#e74c3c" )) +
+  coord_flip() +
+  theme_minimal() +
+  labs(x = "Phase", y = "Goals") +
+  ggtitle("Top scorers from penalties")
+  
+# * What is the distribution other type of goals other than shots ?
+
+Goals %>%
+  filter(type == 'normal', subtype != "shot") %>%
+  group_by(subtype) %>%
+  summarize(goals = n()) %>%
+  na.omit %>%
+  arrange(goals) %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = reorder(subtype, goals),
+                         y = goals),
+           stat = "identity",
+           alpha = 0.9,
+           width = 0.5,
+           fill = "#34495e",
+           position = position_dodge(width = 1)) +
+  coord_flip() +
+  theme_minimal() +
+  labs(x = "Goal subtype", y = "Goals") +
+  ggtitle("Goal subtype distribution")
+
+# Do the tall players score more than the shorter players?
+Goals %>%
+  filter(type %in% c("normal", "penalty", "own goal")) %>%
+  left_join(Player, c('player1' = 'player_api_id')) %>%
+  select(c(player_name, height, player1)) %>%
+  na.omit %>%
+  mutate(height = ifelse(height > mean(height, na.rm = T), "tall", "short")) %>%
+  group_by(height, player_name) %>%
+  summarize(avg_goals = n()) %>%
+  summarize(avg_goals = round(mean(avg_goals), 2))
 
 
+# * What is the home advantage in the game of football ?
+tidy_match %>%
+  group_by(result) %>%
+  summarize(percentage = round((n()/nrow(tidy_match)) * 100, 2))
 
+list_players <- function(players){
+  str_c(players, collapse = ',')
+}
 
+players_matches <-
+  Match %>%
+  select(home_player_1:away_player_11) %>%
+  unite_(col = "players", from = names(.), sep = ',')
 
+players_matches_goals <- 
+  Goals %>%
+  filter(type %in% c('penalty', 'normal')) %>%
+  group_by(player = player1) %>%
+  summarize(goals = n()) %>%
+  ungroup() %>%
+  mutate(matches = str_count(str_c(players_matches$players, collapse = ','),
+                                 pattern = as.character(player)),
+         highlight = (goals > 75)) %>%
+  left_join(Player, c('player' = 'player_api_id')) %>%
+  select(c(player_name, goals, matches, highlight))
 
-
-
-
-
-
-
-
-
-
-
+ggplot(data = players_matches_goals) +
+geom_point(mapping = aes(x = matches,
+                         y = goals,
+                         color = highlight),
+           alpha = 0.85) +
+scale_color_manual(values = c("#95a5a6", "#e74c3c")) +
+geom_text(data = subset(players_matches_goals, highlight),
+          aes(matches, goals, label = player_name),
+          hjust = -0.05, vjust = 0) +
+  theme_minimal() +
+  labs(x = "Matches", y = "Goals") +
+  guides(color = F) +
+  ggtitle("Matches  vs Goals")
 

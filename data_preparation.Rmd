@@ -3,8 +3,7 @@ title: Data Preparation
 author: "Sahil Thapar"
 date: "12/9/2016"
 output:
-  html_document:
-    df_print: paged
+  html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
-```{r, echo = F}
+```{r, echo = F, message = F, warning = F}
 library("knitr") # To enable usage of R code chunks from ecternal file in the Rmd
 library("RSQLite") # Connecting to RSQLite
 library("dplyr")   # Working 
@@ -41,8 +40,6 @@ regularly. The original data consisted of 201 rows which can be seen at the
 [Kaggle dataset website](https://www.kaggle.com/hugomathien/soccer). We take a 
 small subset of the available tables and attributes which are of interest to us.
 The description for these can be found [here](https://sahilthapar.github.io/datawranglingfinalproject/data_description.html).
-
-### Data Pecularities
 
 ***
 
@@ -79,7 +76,14 @@ Team <- dbFetch(myQuery, n = -1)
 rm(temp, con, myQuery)
 ```
 
-### 2. EPL games
+### 2. Data Pecularities
+
+* The goal column is in the form of XML. This needs to be cleaned up.
+* The xml is incomplete with missing values but to see the number of missing values we need to first clean up the data.
+* The data types across the tables aren't in the desired format
+* With over 201 attributes across 11 tables there are a lot of missing values present but none in the variables we are interested in.
+
+### 3. EPL games
 
 We would like to filter out matches for only the England's top flight competition
 EPL (English Premier League)
@@ -97,7 +101,7 @@ Match <- Match %>%
   filter(league_id == England_id)
 ```
 
-### 3. Fixing data types
+### 4. Fixing data types
 
 * The date column is a string, it needs to be converted to date type
 * The stage and season column should be converted to factor variables
@@ -139,7 +143,7 @@ tidy_match <- Match %>%
 
 ```
 
-### 4. Parsing XML
+### 5. Parsing XML
 
 The goal column in the data frame is in XML form and we will use the `xmlToDataFrame` function from the `XML` package __to convert this into a dataframe and will then bind all the dataframes into a single one using `bind_rows`__. This dataframe will provide us all the details of the goals scored in the match. The columns of this data frame are described [here](https://sahilthapar.github.io/datawranglingfinalproject/data_description.html).
 
@@ -180,7 +184,7 @@ Goals <- tidy_match$goal %>%
 ```
 
 
-### 5. Quick look at the data
+### 6. Quick look at the data
 
 We can now go ahead and delete the goal column from tidy_match and look at the two
 primary data frames we will be using.
@@ -193,7 +197,7 @@ DT::datatable(tidy_match)
 DT::datatable(Goals)
 ```
 
-### 6. Summary stats
+### 7. Summary stats
 Let us look at some stats from the clean data
 
 * __Scoring at home__, the average number of goals scored per game by the home team is `r round(mean(tidy_match$home_team_goal), 2)` while the median number of goals is `r median(tidy_match$home_team_goal)`
